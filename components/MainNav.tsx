@@ -8,6 +8,11 @@ const MainNav = ({ className, ...props }: { className: string }) => {
   const params = useParams();
   const routes = [
     {
+      href: `/${params.storeid}`,
+      label: "Dashboard",
+      active: pathname === `/${params.storeid}`,
+    },
+    {
       href: `/${params.storeid}/settings`,
       label: "settings",
       active: pathname === `/${params.storeid}/settings`,
