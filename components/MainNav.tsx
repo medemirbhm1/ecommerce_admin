@@ -14,8 +14,13 @@ const MainNav = ({ className, ...props }: { className: string }) => {
     },
     {
       href: `/${params.storeid}/settings`,
-      label: "settings",
+      label: "Settings",
       active: pathname === `/${params.storeid}/settings`,
+    },
+    {
+      href: `/${params.storeid}/billboards`,
+      label: "Billboards",
+      active: pathname === `/${params.storeid}/billboards`,
     },
   ];
   return (
