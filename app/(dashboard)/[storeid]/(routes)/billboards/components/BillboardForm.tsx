@@ -1,7 +1,6 @@
 "use client";
 
 import AlertModal from "@/components/modals/AlertModal";
-import ApiAlert from "@/components/ui/ApiAlert";
 import Heading from "@/components/ui/Heading";
 import ImageUpload from "@/components/ui/ImageUpload";
 import { Button } from "@/components/ui/button";
@@ -38,7 +37,6 @@ type BillboardFormValues = z.infer<typeof formSchema>;
 const BillboardForm = ({ initialData }: BillboardFormProps) => {
   const router = useRouter();
   const params = useParams();
-  const origin = useOrigin();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const form = useForm<BillboardFormValues>({
@@ -69,7 +67,7 @@ const BillboardForm = ({ initialData }: BillboardFormProps) => {
         await axios.post(`/api/${params.storeid}/billboards`, data);
       }
       router.refresh();
-      router.push(`/${params.storeid}/billboards`)
+      router.push(`/${params.storeid}/billboards`);
       toast.success(toastMessage);
     } catch (err) {
       toast.error("Something went wrong");
@@ -85,7 +83,7 @@ const BillboardForm = ({ initialData }: BillboardFormProps) => {
       );
       router.refresh();
       toast.success("Store deleted");
-      router.push("/");
+      router.push(`/${params.storeid}/billboards`);
     } catch (err) {
       toast.error("Make sure you removed all products and categories first.");
     } finally {
