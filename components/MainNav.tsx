@@ -42,6 +42,11 @@ const MainNav = ({ className, ...props }: { className: string }) => {
       label: "Products",
       active: pathname === `/${params.storeid}/products`,
     },
+    {
+      href: `/${params.storeid}/orders`,
+      label: "Orders",
+      active: pathname === `/${params.storeid}/orders`,
+    },
   ];
   return (
     <nav className={cn("flext items-center space-x-4 lg:space-x-6", className)}>
