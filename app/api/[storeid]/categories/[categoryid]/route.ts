@@ -14,28 +14,18 @@ export async function GET(
   }
 ) {
   try {
-    const { userId } = auth();
-    if (!userId) {
-      return new NextResponse("Unauthenticated", { status: 401 });
-    }
     if (!params.storeid) {
       return new NextResponse("Store id is required", { status: 400 });
     }
     if (!params.categoryid) {
       return new NextResponse("Category id is required", { status: 400 });
     }
-    const store = await prismadb.store.findFirst({
-      where: {
-        id: params.storeid,
-        userId,
-      },
-    });
-    if (!store) {
-      return new NextResponse("Unauthorized", { status: 403 });
-    }
     const category = await prismadb.category.findUnique({
       where: {
         id: params.categoryid,
+      },
+      include: {
+        billboard: true,
       },
     });
     return NextResponse.json(category);

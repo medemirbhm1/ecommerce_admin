@@ -7,10 +7,6 @@ export async function GET(
   { params }: { params: { storeid: string } }
 ) {
   try {
-    const { userId } = auth();
-    if (!userId) {
-      return new NextResponse("Unauthenticated", { status: 401 });
-    }
     if (!params.storeid) {
       return new NextResponse("Storeid is required", { status: 400 });
     }
@@ -19,7 +15,7 @@ export async function GET(
         storeId: params.storeid,
       },
     });
-    return NextResponse.json({ colors });
+    return NextResponse.json(colors);
   } catch (err) {
     console.log("COLORS GET ERROR: ", err);
     return new NextResponse("internal error", { status: 500 });
@@ -60,7 +56,7 @@ export async function POST(
         storeId: params.storeid,
       },
     });
-    return NextResponse.json({ color });
+    return NextResponse.json(color);
   } catch (err) {
     console.log("COLOR POST ERROR: ", err);
     return new NextResponse("internal error", { status: 500 });

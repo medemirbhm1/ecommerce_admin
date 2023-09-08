@@ -12,12 +12,6 @@ export async function GET(
     const colorId = searchParams.get("colorId") || undefined;
     const sizeId = searchParams.get("sizeId") || undefined;
     const isFeatured = searchParams.get("isFeatured");
-    const isArchived = searchParams.get("isArchived");
-    console.log(sizeId);
-    const { userId } = auth();
-    if (!userId) {
-      return new NextResponse("Unauthenticated", { status: 401 });
-    }
     if (!params.storeid) {
       return new NextResponse("Storeid is required", { status: 400 });
     }
@@ -40,7 +34,7 @@ export async function GET(
         createdAt: "desc",
       },
     });
-    return NextResponse.json({ products });
+    return NextResponse.json(products);
   } catch (err) {
     console.log("PRODUCTS GET ERROR: ", err);
     return new NextResponse("internal error", { status: 500 });

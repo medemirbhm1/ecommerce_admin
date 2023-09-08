@@ -7,10 +7,6 @@ export async function GET(
   { params }: { params: { storeid: string } }
 ) {
   try {
-    const { userId } = auth();
-    if (!userId) {
-      return new NextResponse("Unauthenticated", { status: 401 });
-    }
     if (!params.storeid) {
       return new NextResponse("Storeid is required", { status: 400 });
     }
@@ -19,7 +15,7 @@ export async function GET(
         storeId: params.storeid,
       },
     });
-    return NextResponse.json({ sizes });
+    return NextResponse.json(sizes);
   } catch (err) {
     console.log("SIZES GET ERROR: ", err);
     return new NextResponse("internal error", { status: 500 });

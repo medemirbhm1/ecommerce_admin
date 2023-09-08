@@ -113,8 +113,15 @@ model Order {
   storeId String
   store Store @relation("StoreToOrder", fields: [storeId], references: [id])
   orderItems  OrderItem[]
+  name String
+  email String
   phone String
   address String
+  wilaya String
+  commune String
+  deliveryType Int
+  note String
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
