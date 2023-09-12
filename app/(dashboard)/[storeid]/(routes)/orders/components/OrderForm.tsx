@@ -2,7 +2,6 @@
 
 import AlertModal from "@/components/modals/AlertModal";
 import Heading from "@/components/ui/Heading";
-import ImageUpload from "@/components/ui/ImageUpload";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -12,11 +11,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { useOrigin } from "@/hooks/use-origin";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Billboard, Store } from "@prisma/client";
 import axios from "axios";
 import { Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -25,49 +28,47 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import * as z from "zod";
 
-interface BillboardFormProps {
-  initialData: Billboard | null;
+interface OrderFormProps {
+  initialData: any;
 }
-const formSchema = z.object({
-  label: z.string().min(1),
-  imageUrl: z.string().min(1),
-});
-type BillboardFormValues = z.infer<typeof formSchema>;
 
-const BillboardForm = ({ initialData }: BillboardFormProps) => {
+const formSchema = z.object({
+  status: z.string().min(1),
+});
+type OrderFormValues = z.infer<typeof formSchema>;
+
+const status = [
+  { label: "New", value: "New" },
+  { label: "In progress", value: "In progress" },
+  { label: "Done", value: "Done" },
+  { label: "Canceled", value: "Canceled" },
+];
+
+const OrderForm = ({ initialData }: OrderFormProps) => {
   const router = useRouter();
   const params = useParams();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const form = useForm<BillboardFormValues>({
+  const form = useForm<OrderFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
-      label: "",
-      imageUrl: "",
+    defaultValues: {
+      status: initialData?.status,
     },
   });
-  const title = initialData ? "Edit billboard" : "Create billboard";
-  const description = initialData
-    ? "Edit your billboard"
-    : "Add a new billboard";
-  const toastMessage = initialData
-    ? "Billboard updated."
-    : "Billboard added successfuly.";
-  const action = initialData ? "Save changes" : "Create";
+  const title = "Edit order";
+  const description = "Edit your client order.";
+  const toastMessage = "Order updated.";
+  const action = "Save changes";
 
-  const onSubmit = async (data: BillboardFormValues) => {
+  const onSubmit = async (data: OrderFormValues) => {
     try {
       setLoading(true);
-      if (initialData) {
-        await axios.patch(
-          `/api/${params.storeid}/billboards/${params.billboardid}`,
-          data
-        );
-      } else {
-        await axios.post(`/api/${params.storeid}/billboards`, data);
-      }
+      await axios.patch(
+        `/api/${params.storeid}/orders/${params.orderid}`,
+        data
+      );
       router.refresh();
-      router.push(`/${params.storeid}/billboards`);
+      router.push(`/${params.storeid}/orders`);
       toast.success(toastMessage);
     } catch (err) {
       toast.error("Something went wrong");
@@ -78,14 +79,12 @@ const BillboardForm = ({ initialData }: BillboardFormProps) => {
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(
-        `/api/${params.storeid}/billboards/${params.billboardid}`
-      );
+      await axios.delete(`/api/${params.storeid}/orders/${params.orderid}`);
       router.refresh();
-      toast.success("Store deleted");
-      router.push(`/${params.storeid}/billboards`);
+      toast.success("Order deleted");
+      router.push(`/${params.storeid}/orders`);
     } catch (err) {
-      toast.error("Make sure you removed all products and categories first.");
+      toast.error("Something went wrong.");
     } finally {
       setLoading(false);
       setOpen(false);
@@ -120,38 +119,78 @@ const BillboardForm = ({ initialData }: BillboardFormProps) => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 w-full"
         >
-          <FormField
-            control={form.control}
-            name="imageUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Background Image</FormLabel>
-                <FormControl>
-                  <ImageUpload
-                    value={field.value ? [field.value] : []}
-                    disabled={loading}
-                    onChange={(url) => field.onChange(url)}
-                    onRemove={() => field.onChange("")}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="grid grid-cols-3 gap-8">
+          <div>
+            <p className="mb-4 font-semibold">Products: </p>
+            {initialData?.orderItems.map((item: any) => (
+              <p key={item.id}>
+                {item.product?.name}, {item.product?.color?.name},{" "}
+                {item.product?.size?.name}
+              </p>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <p className="font-semibold">
+              Name: <span className="font-normal">{initialData?.name}</span>
+            </p>
+            <p className="font-semibold">
+              Phone: <span className="font-normal">{initialData?.phone}</span>
+            </p>
+            <p className="font-semibold">
+              Email: <span className="font-normal">{initialData?.email}</span>
+            </p>
+            <p className="font-semibold">
+              Wilaya: <span className="font-normal">{initialData?.wilaya}</span>
+            </p>
+            <p className="font-semibold">
+              Commune:{" "}
+              <span className="font-normal">{initialData?.commune}</span>
+            </p>
+            <p className="font-semibold">
+              Adresse:{" "}
+              <span className="font-normal">{initialData?.address}</span>
+            </p>
+            <p className="font-semibold">
+              Delivery type:{" "}
+              <span className="font-normal">
+                {initialData?.deliveryType === 1
+                  ? "Home"
+                  : initialData?.deliveryType === 2
+                  ? "Stop desk"
+                  : ""}
+              </span>
+            </p>
+            <p className="font-semibold">
+              Note: <span className="font-normal">{initialData?.note}</span>
+            </p>
             <FormField
               control={form.control}
-              name="label"
+              name="status"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Label</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="Billboard label"
-                      {...field}
-                    />
-                  </FormControl>
+                  <FormLabel>Status</FormLabel>
+                  <Select
+                    disabled={loading}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          defaultValue={field.value}
+                          placeholder="Change status"
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {status.map((state) => (
+                        <SelectItem key={state.value} value={state.value}>
+                          {state.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -167,4 +206,4 @@ const BillboardForm = ({ initialData }: BillboardFormProps) => {
   );
 };
 
-export default BillboardForm;
+export default OrderForm;

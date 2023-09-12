@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { CategoryColumn } from "./Columns";
+import { OrderColumn } from "./Columns";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,7 +17,7 @@ import axios from "axios";
 import AlertModal from "@/components/modals/AlertModal";
 
 interface cellActionProps {
-  data: CategoryColumn;
+  data: OrderColumn;
 }
 const CellAction: React.FC<cellActionProps> = ({ data }) => {
   const router = useRouter();
@@ -31,11 +31,11 @@ const CellAction: React.FC<cellActionProps> = ({ data }) => {
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${params.storeid}/categories/${data.id}`);
+      await axios.delete(`/api/${params.storeid}/orders/${data.id}`);
       router.refresh();
-      toast.success("Category deleted");
+      toast.success("Order deleted");
     } catch (err) {
-      toast.error("Make sure you removed all products of this category first.");
+      toast.error("Something went wrong.");
     } finally {
       setLoading(false);
       setOpen(false);
@@ -60,7 +60,7 @@ const CellAction: React.FC<cellActionProps> = ({ data }) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={() => {
-              router.push(`/${params.storeid}/categories/${data.id}`);
+              router.push(`/${params.storeid}/orders/${data.id}`);
             }}
           >
             <Edit className="w-4 h-4 mr-2" />

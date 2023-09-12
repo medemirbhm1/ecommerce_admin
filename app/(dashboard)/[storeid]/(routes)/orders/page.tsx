@@ -21,16 +21,17 @@ const OrdersPage = async ({ params }: { params: { storeid: string } }) => {
     },
   });
   const formattedOrders: OrderColumn[] = orders.map(
-    ({ id, createdAt, phone, address, orderItems }) => ({
+    ({ id, createdAt, address, orderItems, status, name }) => ({
       id,
-      phone,
+      status,
+      name,
       address,
       products: orderItems
         .map((orderItem) => orderItem.product.name)
         .join(", "),
       totalPrice: formatter.format(
         orderItems.reduce((total, orderItem) => {
-          return total + Number(orderItem.product.price);
+          return total + Number(orderItem.product.price) * orderItem.quantity;
         }, 0)
       ),
       createdAt: format(createdAt, "MMMM do, yyyy"),
