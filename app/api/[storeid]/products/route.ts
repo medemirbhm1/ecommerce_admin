@@ -48,6 +48,7 @@ export async function POST(
     const { userId } = auth();
     const {
       name,
+      refNum,
       images,
       price,
       colorId,
@@ -98,6 +99,7 @@ export async function POST(
           },
         },
         price,
+        refNum,
         colorId,
         categoryId,
         sizeId,

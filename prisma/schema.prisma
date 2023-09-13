@@ -79,6 +79,7 @@ model Product {
   categoryId String 
   category Category @relation("CategoryToProduct", fields: [categoryId], references: [id])
   name String 
+  refNum String
   price Decimal
   isFeatured Boolean @default(false)
   isArchived Boolean @default(false)
@@ -113,7 +114,8 @@ model Order {
   storeId String
   store Store @relation("StoreToOrder", fields: [storeId], references: [id])
   orderItems  OrderItem[]
-  name String
+  firstname String
+  lastname String
   email String
   phone String
   address String

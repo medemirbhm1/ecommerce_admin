@@ -17,8 +17,9 @@ export const POST = async (
 ) => {
   try {
     const {
-      itemsIds,
-      name,
+      items,
+      firstname,
+      lastname,
       email,
       phone,
       address,
@@ -30,11 +31,11 @@ export const POST = async (
     if (!params.storeid) {
       return new NextResponse("Storeid is required", { status: 400 });
     }
-    if (!name) {
+    if (!firstname) {
       return new NextResponse("Name is required", { status: 400 });
     }
-    if (!email) {
-      return new NextResponse("Email required", { status: 400 });
+    if (!lastname) {
+      return new NextResponse("Name is required", { status: 400 });
     }
     if (!phone) {
       return new NextResponse("Phone is required", { status: 400 });
@@ -51,7 +52,7 @@ export const POST = async (
     if (!deliveryType) {
       return new NextResponse("Delivery type is required", { status: 400 });
     }
-    if (!itemsIds?.length) {
+    if (!items?.length) {
       return new NextResponse("You need to include one item at least", {
         status: 400,
       });
@@ -60,8 +61,9 @@ export const POST = async (
     const order = await prismadb.order.create({
       data: {
         storeId: params.storeid,
-        status: "new",
-        name,
+        status: "New",
+        firstname,
+        lastname,
         email,
         phone,
         address,
@@ -70,11 +72,11 @@ export const POST = async (
         deliveryType,
         note,
         orderItems: {
-          create: itemsIds.map((itemId: string) => ({
-            quantity: 1,
+          create: items.map((item: { id: string; quantity: number }) => ({
+            quantity: item.quantity,
             product: {
               connect: {
-                id: itemId,
+                id: item.id,
               },
             },
           })),

@@ -123,15 +123,21 @@ const OrderForm = ({ initialData }: OrderFormProps) => {
             <p className="mb-4 font-semibold">Products: </p>
             {initialData?.orderItems.map((item: any) => (
               <p key={item.id}>
-                {item.product?.name}, {item.product?.color?.name},{" "}
-                {item.product?.size?.name}
+                {item.product?.refNum}, {item.product?.name},{" "}
+                {item.product?.color?.name}, {item.product?.size?.name} x{" "}
+                {item.quantity}
               </p>
             ))}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <p className="font-semibold">
-              Name: <span className="font-normal">{initialData?.name}</span>
+              Firstname:{" "}
+              <span className="font-normal">{initialData?.firstname}</span>
+            </p>
+            <p className="font-semibold">
+              Lastname:{" "}
+              <span className="font-normal">{initialData?.lastname}</span>
             </p>
             <p className="font-semibold">
               Phone: <span className="font-normal">{initialData?.phone}</span>
@@ -196,7 +202,11 @@ const OrderForm = ({ initialData }: OrderFormProps) => {
               )}
             />
           </div>
-          <Button disabled={loading} className="ml-auto" type="submit">
+          <Button
+            disabled={loading || !form.formState.isDirty}
+            className="ml-auto"
+            type="submit"
+          >
             {action}
           </Button>
         </form>

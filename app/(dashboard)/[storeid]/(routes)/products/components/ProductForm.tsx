@@ -46,6 +46,7 @@ interface ProductFormProps {
 const formSchema = z.object({
   name: z.string().min(1),
   images: z.object({ url: z.string() }).array(),
+  refNum: z.string().min(1),
   price: z.coerce.number().min(1),
   colorId: z.string().min(1),
   categoryId: z.string().min(1),
@@ -72,6 +73,7 @@ const ProductForm = ({
       : {
           name: "",
           images: [],
+          refNum: "",
           price: 0,
           categoryId: "",
           sizeId: "",
@@ -187,6 +189,23 @@ const ProductForm = ({
                     <Input
                       disabled={loading}
                       placeholder="Product name"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="refNum"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Reference number</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="Ref number"
                       {...field}
                     />
                   </FormControl>
@@ -321,9 +340,7 @@ const ProductForm = ({
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      Featured
-                    </FormLabel>
+                    <FormLabel>Featured</FormLabel>
                     <FormDescription>
                       This product will appear on the home page
                     </FormDescription>
@@ -344,9 +361,7 @@ const ProductForm = ({
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      Archived
-                    </FormLabel>
+                    <FormLabel>Archived</FormLabel>
                     <FormDescription>
                       This product will be hidden
                     </FormDescription>

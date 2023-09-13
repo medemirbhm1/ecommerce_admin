@@ -53,6 +53,7 @@ export async function PATCH(
     const { userId } = auth();
     const {
       name,
+      refNum,
       images,
       price,
       colorId,
@@ -105,6 +106,7 @@ export async function PATCH(
           deleteMany: {},
         },
         price,
+        refNum,
         colorId,
         categoryId,
         sizeId,
